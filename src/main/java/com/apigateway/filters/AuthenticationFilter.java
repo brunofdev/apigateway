@@ -46,48 +46,42 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
-            // Adicionar o header interno para todas as requisições que passam pelo Gateway
-            // Isso permite que os serviços internos confiem que a requisição veio do Gateway.
-            // O serviço interno pode então decidir se o header secreto é suficiente
-            // ou se ele também precisa de um token JWT.
-            ServerHttpRequest.Builder mutatedRequest = request.mutate()
-                    .header("X-Internal-Secret", internalApiSecret);
-
-            // Verifica se a rota é pública e não requer JWT
-            if (openApiEndpoints.contains(path)) {
-                // Se for uma rota pública, simplesmente adiciona o header interno
-                // e permite que a requisição prossiga.
-                return chain.filter(exchange.mutate().request(mutatedRequest.build()).build());
+            // Se a rota for pública, a lógica termina aqui.
+            if (openApiEndpoints.stream().anyMatch(path::startsWith)) {
+                // Construímos uma nova requisição apenas para adicionar o header interno
+                ServerHttpRequest mutatedRequest = request.mutate()
+                        .header("X-Internal-Secret", internalApiSecret)
+                        .build();
+                // E passamos a requisição modificada para a cadeia de filtros
+                return chain.filter(exchange.mutate().request(mutatedRequest).build());
             }
 
-            // Para rotas protegidas, validamos o JWT
+            // --- Lógica para rotas protegidas ---
+
+            // 1. Pega o header de autorização
             String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
+            // 2. Valida se o header existe e tem o formato "Bearer "
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return this.onError(exchange, "Cabeçalho de autorização ausente ou malformado.", HttpStatus.UNAUTHORIZED);
             }
 
-            String token = authHeader.substring(7); // Remove "Bearer "
-
-            try {
-                if (!jwtUtil.isTokenValid(token)) {
-                    return this.onError(exchange, "Token JWT inválido ou expirado.", HttpStatus.UNAUTHORIZED);
-                }
-
-                String username = jwtUtil.extractUsername(token);
-
-                // Adiciona o username extraído do JWT à requisição
-                // Isso pode ser útil para serviços internos saberem quem é o usuário logado
-                mutatedRequest.header("X-Authenticated-User", username);
-
-            } catch (ExpiredJwtException e) {
-                return this.onError(exchange, "Token JWT expirado.", HttpStatus.UNAUTHORIZED);
-            } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
-                return this.onError(exchange, "Token JWT inválido.", HttpStatus.UNAUTHORIZED);
+            // 3. Extrai e valida o token
+            String token = authHeader.substring(7);
+            if (!jwtUtil.isTokenValid(token)) {
+                return this.onError(exchange, "Token JWT inválido ou expirado.", HttpStatus.UNAUTHORIZED);
             }
 
-            // Continua a cadeia de filtros com a requisição modificada (com headers adicionais)
-            return chain.filter(exchange.mutate().request(mutatedRequest.build()).build());
+            // 4. Se o token for válido, enriquece a requisição com os headers
+            String username = jwtUtil.extractUsername(token);
+
+            ServerHttpRequest mutatedRequest = request.mutate()
+                    .header("X-Authenticated-User", username)
+                    .header("X-Internal-Secret", internalApiSecret)
+                    .build();
+
+            // 5. Deixa a requisição (agora enriquecida) continuar para o serviço de destino
+            return chain.filter(exchange.mutate().request(mutatedRequest).build());
         };
     }
 
