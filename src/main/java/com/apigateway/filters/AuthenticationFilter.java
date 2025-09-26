@@ -25,7 +25,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private final JwtUtil jwtUtil;
 
     // Injetamos o segredo interno aqui
-    @Value("${API_INTERNAL_SECRET}") // Certifique-se que o nome da variável de ambiente é exatamente este
+    @Value("${api.internal.secret}") // Certifique-se que o nome da variável de ambiente é exatamente este
     private String internalApiSecret;
 
     // Lista de endpoints que não exigem JWT (são públicos)
