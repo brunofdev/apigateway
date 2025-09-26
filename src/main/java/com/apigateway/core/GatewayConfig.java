@@ -16,20 +16,41 @@ public class GatewayConfig {
     @Value("${service.user.url}")
     private String userServiceUrl;
 
-    @Value("${service.feedback.url")
-    String feedbackServiceUrl;
+    // CORREÇÃO 1: Adicionada a chave de fechamento }
+    @Value("${service.feedback.url}")
+    private String feedbackServiceUrl;
 
     private final AuthenticationFilter authenticationFilter;
 
-    public GatewayConfig(AuthenticationFilter authenticationFilter){
+    public GatewayConfig(AuthenticationFilter authenticationFilter) {
         this.authenticationFilter = authenticationFilter;
     }
+
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder){
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("auth_service_rout", route -> route.path("api/auth/**").uri(authServiceUrl))
-                .route("user_service_route", route -> route.path("/api/users/**").uri(userServiceUrl))
-                .route("feedback_service_route", route -> route.path("/api/feedbacks/**").uri(feedbackServiceUrl))
+                // Rota para o Serviço de Autenticação
+                .route("auth_service_route", route -> route
+                        // CORREÇÃO 2: Adicionada a barra /
+                        .path("/api/auth/**")
+                        // CORREÇÃO 3: Filtro de autenticação aplicado
+                        .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
+                        .uri(authServiceUrl))
+
+                // Rota para o Serviço de Usuários
+                .route("user_service_route", route -> route
+                        .path("/api/users/**")
+                        // CORREÇÃO 3: Filtro de autenticação aplicado
+                        .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
+                        .uri(userServiceUrl))
+
+                // Rota para o Serviço de Feedback
+                .route("feedback_service_route", route -> route
+                        .path("/api/feedbacks/**")
+                        // CORREÇÃO 3: Filtro de autenticação aplicado
+                        .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
+                        .uri(feedbackServiceUrl))
+
                 .build();
     }
 }
