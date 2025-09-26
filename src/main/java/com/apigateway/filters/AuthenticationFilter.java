@@ -46,6 +46,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
+            // ---LINHA PARA DEBUG ---
+            System.out.println(">>> ROTA ACESSADA NO GATEWAY: " + path);
+            // ------------------------------------
             // Se a rota for pública, a lógica termina aqui.
             if (openApiEndpoints.stream().anyMatch(path::startsWith)) {
                 // Construímos uma nova requisição apenas para adicionar o header interno
