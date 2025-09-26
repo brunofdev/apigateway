@@ -19,7 +19,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     public static final List<String> openApiEndpoints = List.of(
             "/api/auth/login",
-            "/api/users/register-user-service"
+            "/api/users/register"
     );
 
     public AuthenticationFilter(JwtUtil jwtUtil){
@@ -30,7 +30,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     public GatewayFilter apply(Config config){
         return (exchange, chain) -> {
             String path = exchange.getRequest().getURI().getPath();
-            if (openApiEndpoints.stream().anyMatch(path::startsWith)){
+            if (openApiEndpoints.contains(path)){
                 return chain.filter(exchange);
             }
             String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
