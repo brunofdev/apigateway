@@ -46,4 +46,7 @@ public class JwtUtil {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
 }
