@@ -16,7 +16,7 @@ public class CorsConfig {
 
         // AQUI ESTÁ O AJUSTE:
         corsConfig.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",      // Para seu desenvolvimento local
+                "http://localhost:5173",      // Para seu desenvolvimento local
                 "https://www.brunofragadev.com" // Para seu site em produção
         ));
 
