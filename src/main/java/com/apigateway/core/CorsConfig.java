@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+
 import java.util.Arrays;
 
 @Configuration
@@ -14,11 +15,12 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        // AQUI ESTÁ O AJUSTE:
-        corsConfig.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",      // Para seu desenvolvimento local
-                "https://www.brunofragadev.com" // Para seu site em produção
+
+        corsConfig.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:5173",          // Para seu desenvolvimento local
+                "https://www.brunofragadev.com"   // Para seu site em produção
         ));
+
 
         corsConfig.setMaxAge(3600L);
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
