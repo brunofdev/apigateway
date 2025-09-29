@@ -20,6 +20,9 @@ public class GatewayConfig {
     @Value("${service.feedback.url}")
     private String feedbackServiceUrl;
 
+    @Value("${service.processfeedback.url}")
+    private String processfeedbackUrl;
+
     private final AuthenticationFilter authenticationFilter;
 
     public GatewayConfig(AuthenticationFilter authenticationFilter) {
@@ -45,12 +48,11 @@ public class GatewayConfig {
                         .uri(userServiceUrl))
 
                 // Rota para o Serviço de Feedback
-                .route("feedback_service_route", route -> route
-                        .path("/api/feedbacks/**")
+                .route("processfeedback_service_route", route -> route
+                        .path("/api/processfeedback/**")
                         // CORREÇÃO 3: Filtro de autenticação aplicado
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
                         .uri(feedbackServiceUrl))
-
                 .build();
     }
 }
