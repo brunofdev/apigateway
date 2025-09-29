@@ -14,13 +14,10 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
-                .cors(cors -> cors.disable())
+                .cors(cors -> {}) // ativa CORS (usa o CorsWebFilter que você já tem)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        // AQUI ESTÁ O AJUSTE:
-                        // Permite a requisição preflight (OPTIONS) do CORS para todas as rotas
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                        // Mantém a regra anterior para permitir que nosso filtro controle o resto
                         .pathMatchers("/**").permitAll()
                 );
         return http.build();

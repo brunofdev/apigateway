@@ -16,9 +16,9 @@ public class CorsConfig {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
         // Define as origens permitidas
-        corsConfig.setAllowedOriginPatterns(Arrays.asList(
-                "http://localhost:5173",          // Desenvolvimento local
-                "https://www.brunofragadev.com"   // Produção
+        corsConfig.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "https://www.brunofragadev.com"
         ));
 
         // Permite credenciais (cookies, headers de autenticação)

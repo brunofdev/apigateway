@@ -46,6 +46,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
+            if (request.getMethod() != null && request.getMethod().matches("OPTIONS")) {
+                return chain.filter(exchange);
+            }
+
             // ---LINHA PARA DEBUG ---
             System.out.println(">>> ROTA ACESSADA NO GATEWAY: " + path);
             // ------------------------------------
