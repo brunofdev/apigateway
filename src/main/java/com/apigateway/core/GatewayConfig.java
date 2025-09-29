@@ -52,7 +52,7 @@ public class GatewayConfig {
                         .path("/api/processfeedback/**")
                         // CORREÇÃO 3: Filtro de autenticação aplicado
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
-                        .uri(feedbackServiceUrl))
+                        .uri(processfeedbackUrl))
                 .build();
     }
 }
