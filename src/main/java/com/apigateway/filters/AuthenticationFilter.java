@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -46,7 +47,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
-            if (request.getMethod() != null && request.getMethod().matches("OPTIONS")) {
+            if (request.getMethod() == HttpMethod.OPTIONS) {
                 return chain.filter(exchange);
             }
 
@@ -86,7 +87,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     .header("X-Authenticated-User", username)
                     .header("X-Internal-Secret", internalApiSecret)
                     .build();
-
             // 5. Deixa a requisição (agora enriquecida) continuar para o serviço de destino
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
         };

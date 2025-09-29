@@ -15,25 +15,19 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        // Define as origens permitidas
         corsConfig.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
                 "https://www.brunofragadev.com"
         ));
-
-        // Permite credenciais (cookies, headers de autenticação)
         corsConfig.setAllowCredentials(true);
-
-        // Define os métodos HTTP permitidos
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Permite todos os cabeçalhos
         corsConfig.setAllowedHeaders(Arrays.asList("*"));
 
-        // Define o tempo de cache do CORS (1 hora)
+        // Somente os headers que o frontend precisa ler
+        corsConfig.setExposedHeaders(Arrays.asList("X-Authenticated-User"));
+
         corsConfig.setMaxAge(3600L);
 
-        // Aplica a configuração a todos os endpoints
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
 
