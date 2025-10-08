@@ -39,7 +39,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
      */
     private static final Map<String, UserRole> PROTECTED_ROUTES = Map.of(
             "/api/users/getusers", UserRole.ADMIN,
-            "/api/users/deleteuser/{id}", UserRole.ADMIN
+            "/api/users/deleteuser", UserRole.ADMIN
             // Adicionar novas regras de autorização aqui. Ex: "/api/admin", UserRole.ADMIN
     );
     /**
