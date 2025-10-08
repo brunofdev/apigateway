@@ -34,23 +34,19 @@ public class GatewayConfig {
         return builder.routes()
                 // Rota para o Serviço de Autenticação
                 .route("auth_service_route", route -> route
-                        // CORREÇÃO 2: Adicionada a barra /
                         .path("/api/auth/**")
-                        // CORREÇÃO 3: Filtro de autenticação aplicado
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
                         .uri(authServiceUrl))
 
                 // Rota para o Serviço de Usuários
                 .route("user_service_route", route -> route
                         .path("/api/users/**")
-                        // CORREÇÃO 3: Filtro de autenticação aplicado
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
                         .uri(userServiceUrl))
 
                 // Rota para o Serviço de Feedback
                 .route("processfeedback_service_route", route -> route
                         .path("/api/processfeedback/**")
-                        // CORREÇÃO 3: Filtro de autenticação aplicado
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
                         .uri(processfeedbackUrl))
                 .build();

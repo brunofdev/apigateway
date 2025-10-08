@@ -1,5 +1,6 @@
 package com.apigateway.jwt;
 
+import com.apigateway.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -57,5 +58,13 @@ public class JwtUtil {
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public UserRole extractUserRole(String token) {
+        String roleStr = extractClaim(token, claims -> claims.get("role", String.class));
+        if(roleStr == null){
+            return UserRole.USER;
+        }
+        return UserRole.valueOf(roleStr);
     }
 }
