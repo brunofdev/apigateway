@@ -44,11 +44,17 @@ public class GatewayConfig {
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
                         .uri(userServiceUrl))
 
-                // Rota para o Serviço de Feedback
+                // Rota para o Serviço de Feedback(apenas para criar feedbacks)
                 .route("processfeedback_service_route", route -> route
                         .path("/api/processfeedback/**")
                         .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
                         .uri(processfeedbackUrl))
+                // Rota para o Serviço de Feedback(restante dos serviços e verbos como get, delete etc... de feedback
+                .route("feedback_service_route", route -> route
+                        .path("/api/feedback/**")
+                        .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
+                        .uri(feedbackServiceUrl))
                 .build();
+
     }
 }
