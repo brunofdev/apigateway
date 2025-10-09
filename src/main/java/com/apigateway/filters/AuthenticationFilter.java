@@ -38,16 +38,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private static final Map<String, UserRole> PROTECTED_ROUTES = Map.of(
             "/api/users/getusers", UserRole.ADMIN,
             "/api/users/deleteuser", UserRole.ADMIN,
-            "/api/users/deleteuserbyusername", UserRole.ADMIN
+            "/api/users/deleteuserbyusername", UserRole.ADMIN,
+            "/api/feedback/deletefeedback", UserRole.ADMIN
             // Adicionar novas regras de autorização aqui. Ex: "/api/admin", UserRole.ADMIN
     );
     //Lista de endpoints públicos que não requerem autenticação JWT.
     private static final List<String> PUBLIC_ENDPOINTS = List.of(
             "/api/auth/login",
-            "/api/users/register"
+            "/api/users/register",
+            "/api/feedback/getallfeedbacks"
     );
-
-
 
     public AuthenticationFilter(JwtUtil jwtUtil) {
         super(Config.class);
