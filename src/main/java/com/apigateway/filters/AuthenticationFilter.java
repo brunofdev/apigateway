@@ -33,18 +33,15 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Value("${api.internal.secret}")
     private String internalApiSecret;
 
-    /**
-     * Mapa estático para centralizar as regras de autorização.
-     * Define a permissão mínima necessária para acessar rotas que começam com um determinado prefixo.
-     */
+    //Mapa estático para centralizar as regras de autorização.
+    //Define a permissão mínima necessária para acessar rotas que começam com um determinado prefixo.
     private static final Map<String, UserRole> PROTECTED_ROUTES = Map.of(
             "/api/users/getusers", UserRole.ADMIN,
-            "/api/users/deleteuser", UserRole.ADMIN
+            "/api/users/deleteuser", UserRole.ADMIN,
+            "/api/users/deleteuserbyusername", UserRole.ADMIN
             // Adicionar novas regras de autorização aqui. Ex: "/api/admin", UserRole.ADMIN
     );
-    /**
-     * Lista de endpoints públicos que não requerem autenticação JWT.
-     */
+    //Lista de endpoints públicos que não requerem autenticação JWT.
     private static final List<String> PUBLIC_ENDPOINTS = List.of(
             "/api/auth/login",
             "/api/users/register"
